@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Income & Savings Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --gray: #95a5a6;
+            --light-blue: #e7f4fe;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-circle {
+            width: 60px;
+            height: 60px;
+            background: var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .logo-text {
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        .logo-subtext {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        .tabs {
+            display: flex;
+            background: var(--light);
+            border-bottom: 2px solid var(--secondary);
+        }
+        
+        .tab-btn {
+            padding: 16px 30px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--dark);
+            opacity: 0.7;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tab-btn:hover {
+            opacity: 1;
+            background-color: rgba(52, 152, 219, 0.1);
+        }
+        
+        .tab-btn.active {
+            opacity: 1;
+            background-color: var(--secondary);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 30px;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        h2 {
+            color: var(--primary);
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid var(--light);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+        
+        input:focus, select:focus {
+            border-color: var(--secondary);
+            outline: none;
+        }
+        
+        button {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        button:hover {
+            background: #2980b9;
+        }
+        
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 14px;
+        }
+        
+        .btn-success {
+            background: var(--success);
+        }
+        
+        .btn-success:hover {
+            background: #27ae60;
+        }
+        
+        .btn-danger {
+            background: var(--accent);
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        
+        .result-box {
+            background: var(--light-blue);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 4px solid var(--secondary);
+        }
+        
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px dashed #cbd5e0;
+        }
+        
+        .result-item:last-child {
+            border-bottom: none;
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 18px;
+        }
+        
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            margin-bottom: 25px;
+        }
+        
+        .calendar-header {
+            grid-column: span 7;
+            text-align: center;
+            padding: 15px;
+            background: var(--secondary);
+            color: white;
+            border-radius: 8px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .day-header {
+            text-align: center;
+            padding: 12px;
+            background: var(--light);
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        
+        .day {
+            height: 80px;
+            border: 2px solid var(--light);
+            border-radius: 8px;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s;
+        }
+        
+        .day:hover {
+            border-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+        
+        .day-number {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .day-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            text-align: center;
+            font-size: 16px;
+            padding: 5px;
+        }
+        
+        .expense-category {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: var(--light);
+            border-radius: 8px;
+            gap: 15px;
+        }
+        
+        .expense-category input {
+            flex: 1;
+            margin: 0;
+        }
+        
+        .savings-category {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: var(--light);
+            border-radius: 8px;
+            gap: 15px;
+        }
+        
+        .savings-category input {
+            margin: 0;
+        }
+        
+        .savings-category input.savings-name {
+            flex: 1;
+        }
+        
+        .savings-category input.savings-percent {
+            width: 100px;
+        }
+        
+        .savings-allocation {
+            margin-top: 25px;
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: var(--light);
+            border-radius: 8px;
+        }
+        
+        .positive {
+            color: var(--success);
+            font-weight: bold;
+        }
+        
+        .negative {
+            color: var(--accent);
+            font-weight: bold;
+        }
+        
+        .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .half-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .share-btn {
+            background: var(--success);
+            margin-top: 20px;
+        }
+        
+        .share-btn:hover {
+            background: #27ae60;
+        }
+        
+        @media (max-width: 900px) {
+            .two-columns {
+                grid-template-columns: 1fr;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .half-inputs {
+                grid-template-columns: 1fr;
+            }
+            
+            .calendar {
+                gap: 4px;
+            }
+            
+            .day {
+                height: 70px;
+                padding: 4px;
+            }
+            
+            .day-input {
+                font-size: 14px;
+            }
+            
+            .savings-category {
+                flex-wrap: wrap;
+            }
+            
+            .savings-category input.savings-percent {
+                width: 80px;
+            }
+        }
+        
+        .instructions {
+            background: #fff8e1;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--warning);
+            font-size: 14px;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+            margin-top: 10px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        .add-expense-btn {
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .add-savings-btn {
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .savings-total {
+            background: var(--success);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .percent-total {
+            margin-top: 10px;
+            padding: 10px;
+            background: #ffecb3;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-circle">
+                    <i class="fas fa-dollar-sign fa-2x"></i>
+                </div>
+                <div>
+                    <div class="logo-text">Income & Savings Calculator</div>
+                    <div class="logo-subtext">Plan your finances with confidence</div>
+                </div>
+            </div>
+            <div>
+                <i class="fas fa-calendar-alt fa-2x"></i>
+            </div>
+        </header>
+        
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="salary">
+                <i class="fas fa-calculator"></i> Salary Calculator
+            </button>
+            <button class="tab-btn" data-tab="calendar">
+                <i class="fas fa-calendar-day"></i> Work Calendar
+            </button>
+            <button class="tab-btn" data-tab="expenses">
+                <i class="fas fa-chart-pie"></i> Expenses & Savings
+            </button>
+        </div>
+        
+        <!-- Salary Calculator Tab -->
+        <div id="salary" class="tab-content active">
+            <h2><i class="fas fa-calculator"></i> Salary Calculator</h2>
+            
+            <div class="instructions">
+                <strong>How to use:</strong> Enter your hourly rate or select a different calculation basis. 
+                Choose your work type and see your earnings across different time periods.
+                <ul>
+                    <li>You can calculate based on hourly, daily, weekly, monthly, or yearly amounts</li>
+                    <li>Split your monthly earnings into two payments</li>
+                    <li>All values update automatically when you change any field</li>
+                </ul>
+            </div>
+            
+            <div class="two-columns">
+                <div class="card">
+                    <div class="input-group">
+                        <label for="hourly-rate"><i class="fas fa-money-bill-wave"></i> Hourly Rate ($)</label>
+                        <input type="number" id="hourly-rate" min="0" step="0.01" placeholder="Enter your hourly rate" value="25">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="work-type"><i class="fas fa-briefcase"></i> Work Type</label>
+                        <select id="work-type">
+                            <option value="full-time">Full Time (40 hrs/week)</option>
+                            <option value="part-time">Part Time (20 hrs/week)</option>
+                            <option value="custom">Custom Hours</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group" id="custom-hours-container" style="display: none;">
+                        <label for="custom-hours"><i class="fas fa-clock"></i> Custom Weekly Hours</label>
+                        <input type="number" id="custom-hours" min="0" step="0.5" placeholder="Enter weekly hours" value="40">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="payment-frequency"><i class="fas fa-calendar-week"></i> Calculate Based On</label>
+                        <select id="payment-frequency">
+                            <option value="hourly">Hourly Rate</option>
+                            <option value="daily">Daily Earnings</option>
+                            <option value="weekly">Weekly Earnings</option>
+                            <option value="monthly">Monthly Earnings</option>
+                            <option value="yearly">Yearly Salary</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group" id="amount-container">
+                        <label for="amount"><i class="fas fa-dollar-sign"></i> Amount ($)</label>
+                        <input type="number" id="amount" min="0" step="0.01" placeholder="Enter amount" value="25">
+                    </div>
+                    
+                    <button id="calculate-salary">
+                        <i class="fas fa-calculator"></i> Calculate
+                    </button>
+                </div>
+                
+                <div>
+                    <div class="card">
+                        <h3><i class="fas fa-chart-line"></i> Earnings Summary</h3>
+                        <div class="result-box">
+                            <div class="result-item">
+                                <span>Hourly Rate:</span>
+                                <span id="result-hourly">$25.00</span>
+                            </div>
+                            <div class="result-item">
+                                <span>Daily Earnings:</span>
+                                <span id="result-daily">$200.00</span>
+                            </div>
+                            <div class="result-item">
+                                <span>Weekly Earnings:</span>
+                                <span id="result-weekly">$1,000.00</span>
+                            </div>
+                            <div class="result-item">
+                                <span>Monthly Earnings:</span>
+                                <span id="result-monthly">$4,333.33</span>
+                            </div>
+                            <div class="result-item">
+                                <span>Yearly Salary:</span>
+                                <span id="result-yearly">$52,000.00</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3><i class="fas fa-money-check"></i> Payment Distribution</h3>
+                        <div class="half-inputs">
+                            <div class="input-group">
+                                <label for="payment1">Payment 1 Amount ($)</label>
+                                <input type="number" id="payment1" min="0" step="0.01" value="2166.67">
+                            </div>
+                            
+                            <div class="input-group">
+                                <label for="payment2">Payment 2 Amount ($)</label>
+                                <input type="number" id="payment2" min="0" step="0.01" value="2166.67">
+                            </div>
+                        </div>
+                        
+                        <button id="calculate-payments">
+                            <i class="fas fa-balance-scale"></i> Update Payments
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Work Calendar Tab -->
+        <div id="calendar" class="tab-content">
+            <h2><i class="fas fa-calendar-day"></i> Work Calendar</h2>
+            
+            <div class="instructions">
+                <strong>How to use:</strong> Select a month and year, then enter hours worked for each day. 
+                Your total hours and earnings will calculate automatically.
+                <ul>
+                    <li>Click on any day to enter hours worked</li>
+                    <li>Earnings update in real-time as you enter hours</li>
+                    <li>Use the payment distribution section to plan your finances</li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <div class="half-inputs">
+                    <div class="input-group">
+                        <label for="calendar-hourly-rate"><i class="fas fa-money-bill-wave"></i> Hourly Rate ($)</label>
+                        <input type="number" id="calendar-hourly-rate" min="0" step="0.01" value="25">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="select-month"><i class="fas fa-calendar"></i> Select Month</label>
+                        <select id="select-month">
+                            <option value="0">January</option>
+                            <option value="1">February</option>
+                            <option value="2">March</option>
+                            <option value="3">April</option>
+                            <option value="4">May</option>
+                            <option value="5">June</option>
+                            <option value="6">July</option>
+                            <option value="7">August</option>
+                            <option value="8">September</option>
+                            <option value="9">October</option>
+                            <option value="10">November</option>
+                            <option value="11">December</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="select-year"><i class="fas fa-calendar-alt"></i> Select Year</label>
+                        <select id="select-year"></select>
+                    </div>
+                </div>
+                
+                <div class="calendar" id="calendar-container">
+                    <!-- Calendar will be generated here -->
+                </div>
+                
+                <div class="result-box">
+                    <h3><i class="fas fa-chart-bar"></i> Monthly Summary</h3>
+                    <div class="result-item">
+                        <span>Total Hours:</span>
+                        <span id="total-hours">0</span>
+                    </div>
+                    <div class="result-item">
+                        <span>Total Earnings:</span>
+                        <span id="total-earnings">$0.00</span>
+                    </div>
+                    <div class="result-item">
+                        <span>Payment 1 (50%):</span>
+                        <span id="calendar-payment1">$0.00</span>
+                    </div>
+                    <div class="result-item">
+                        <span>Payment 2 (50%):</span>
+                        <span id="calendar-payment2">$0.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Expenses & Savings Tab -->
+        <div id="expenses" class="tab-content">
+            <h2><i class="fas fa-chart-pie"></i> Expenses & Savings</h2>
+            
+            <div class="instructions">
+                <strong>How to use:</strong> Enter your monthly income and expenses. The calculator will show your remaining balance and suggest savings allocations.
+                <ul>
+                    <li>Enter your monthly income at the top</li>
+                    <li>Add your expected expenses in each category</li>
+                    <li>Add custom savings categories with titles and percentages</li>
+                    <li>All values update automatically</li>
+                </ul>
+            </div>
+            
+            <div class="two-columns">
+                <div>
+                    <div class="card">
+                        <div class="input-group">
+                            <label for="monthly-income"><i class="fas fa-money-check"></i> Monthly Income ($)</label>
+                            <input type="number" id="monthly-income" min="0" step="0.01" value="4333.33">
+                        </div>
+                        
+                        <h3><i class="fas fa-receipt"></i> Monthly Expenses</h3>
+                        
+                        <div id="expenses-container">
+                            <div class="expense-category" data-id="1">
+                                <i class="fas fa-taxi"></i>
+                                <input type="text" class="expense-name" placeholder="Expense Name" value="Uber/Travel">
+                                <input type="number" class="expense-amount" min="0" step="0.01" placeholder="Amount" value="200">
+                                <button class="btn-danger btn-small remove-expense"><i class="fas fa-trash"></i></button>
+                            </div>
+                            
+                            <div class="expense-category" data-id="2">
+                                <i class="fas fa-utensils"></i>
+                                <input type="text" class="expense-name" placeholder="Expense Name" value="Dining Out">
+                                <input type="number" class="expense-amount" min="0" step="0.01" placeholder="Amount" value="300">
+                                <button class="btn-danger btn-small remove-expense"><i class="fas fa-trash"></i></button>
+                            </div>
+                            
+                            <div class="expense-category" data-id="3">
+                                <i class="fas fa-ice-cream"></i>
+                                <input type="text" class="expense-name" placeholder="Expense Name" value="Desserts/Snacks">
+                                <input type="number" class="expense-amount" min="0" step="0.01" placeholder="Amount" value="100">
+                                <button class="btn-danger btn-small remove-expense"><i class="fas fa-trash"></i></button>
+                            </div>
+                            
+                            <div class="expense-category" data-id="4">
+                                <i class="fas fa-shopping-cart"></i>
+                                <input type="text" class="expense-name" placeholder="Expense Name" value="Groceries">
+                                <input type="number" class="expense-amount" min="0" step="0.01" placeholder="Amount" value="400">
+                                <button class="btn-danger btn-small remove-expense"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                        
+                        <button class="btn-success add-expense-btn" id="add-expense">
+                            <i class="fas fa-plus-circle"></i> Add Expense Category
+                        </button>
+                    </div>
+                </div>
+                
+                <div>
+                    <div class="card">
+                        <div class="result-box">
+                            <h3><i class="fas fa-file-invoice-dollar"></i> Financial Summary</h3>
+                            <div class="result-item">
+                                <span>Total Income:</span>
+                                <span id="total-income">$4,333.33</span>
+                            </div>
+                            <div class="result-item">
+                                <span>Total Expenses:</span>
+                                <span id="total-expenses">$1,000.00</span>
+                            </div>
+                            <div class="result-item">
+                                <span>Remaining Balance:</span>
+                                <span id="remaining-balance" class="positive">$3,333.33</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="savings-allocation">
+                            <h3><i class="fas fa-piggy-bank"></i> Savings Allocation</h3>
+                            
+                            <div id="savings-container">
+                                <div class="savings-category" data-id="1">
+                                    <i class="fas fa-shield-alt"></i>
+                                    <input type="text" class="savings-name" placeholder="Savings Name" value="Emergency Fund">
+                                    <input type="number" class="savings-percent" min="0" max="100" value="20" step="1">
+                                    <span>%</span>
+                                    <button class="btn-danger btn-small remove-savings"><i class="fas fa-trash"></i></button>
+                                </div>
+                                
+                                <div class="savings-category" data-id="2">
+                                    <i class="fas fa-chart-line"></i>
+                                    <input type="text" class="savings-name" placeholder="Savings Name" value="Investments">
+                                    <input type="number" class="savings-percent" min="0" max="100" value="30" step="1">
+                                    <span>%</span>
+                                    <button class="btn-danger btn-small remove-savings"><i class="fas fa-trash"></i></button>
+                                </div>
+                                
+                                <div class="savings-category" data-id="3">
+                                    <i class="fas fa-university"></i>
+                                    <input type="text" class="savings-name" placeholder="Savings Name" value="Retirement">
+                                    <input type="number" class="savings-percent" min="0" max="100" value="30" step="1">
+                                    <span>%</span>
+                                    <button class="btn-danger btn-small remove-savings"><i class="fas fa-trash"></i></button>
+                                </div>
+                                
+                                <div class="savings-category" data-id="4">
+                                    <i class="fas fa-wallet"></i>
+                                    <input type="text" class="savings-name" placeholder="Savings Name" value="Other Savings">
+                                    <input type="number" class="savings-percent" min="0" max="100" value="20" step="1">
+                                    <span>%</span>
+                                    <button class="btn-danger btn-small remove-savings"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                            
+                            <div class="percent-total">
+                                Total Allocation: <span id="percent-total">100</span>%
+                            </div>
+                            
+                            <button class="btn-success add-savings-btn" id="add-savings">
+                                <i class="fas fa-plus-circle"></i> Add Savings Category
+                            </button>
+                            
+                            <div class="result-box">
+                                <div id="savings-results">
+                                    <!-- Savings results will be generated here -->
+                                </div>
+                                <div class="result-item">
+                                    <span>Total Allocated:</span>
+                                    <span id="total-allocated">$3,333.33</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="savings-total">
+                        <i class="fas fa-piggy-bank"></i> Total Potential Savings: <span id="total-savings">$3,333.33</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="padding: 20px; text-align: center; background: var(--light);">
+            <button class="share-btn" id="share-link">
+                <i class="fas fa-share-alt"></i> Share This Calculator
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Tab functionality
+        document.querySelectorAll('.tab-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all tabs and contents
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                
+                // Add active class to clicked tab and corresponding content
+                button.classList.add('active');
+                document.getElementById(button.dataset.tab).classList.add('active');
+            });
+        });
+        
+        // Work type toggle
+        document.getElementById('work-type').addEventListener('change', function() {
+            document.getElementById('custom-hours-container').style.display = 
+                this.value === 'custom' ? 'block' : 'none';
+        });
+        
+        // Year dropdown for calendar
+        const yearSelect = document.getElementById('select-year');
+        const currentYear = new Date().getFullYear();
+        for (let year = currentYear - 1; year <= currentYear + 1; year++) {
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = year;
+            option.selected = year === currentYear;
+            yearSelect.appendChild(option);
+        }
+        
+        // Generate calendar
+        function generateCalendar() {
+            const month = parseInt(document.getElementById('select-month').value);
+            const year = parseInt(document.getElementById('select-year').value);
+            
+            const calendarContainer = document.getElementById('calendar-container');
+            calendarContainer.innerHTML = '';
+            
+            // Add calendar header
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                               'July', 'August', 'September', 'October', 'November', 'December'];
+            const header = document.createElement('div');
+            header.className = 'calendar-header';
+            header.innerHTML = `
+                <span><i class="fas fa-chevron-left" id="prev-month"></i></span>
+                <span>${monthNames[month]} ${year}</span>
+                <span><i class="fas fa-chevron-right" id="next-month"></i></span>
+            `;
+            calendarContainer.appendChild(header);
+            
+            // Add day headers
+            const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            dayNames.forEach(day => {
+                const dayHeader = document.createElement('div');
+                dayHeader.className = 'day-header';
+                dayHeader.textContent = day;
+                calendarContainer.appendChild(dayHeader);
+            });
+            
+            // Get first day of month and number of days
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            
+            // Add empty days for padding
+            for (let i = 0; i < firstDay; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'day';
+                calendarContainer.appendChild(emptyDay);
+            }
+            
+            // Add days of the month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'day';
+                
+                const dayNumber = document.createElement('div');
+                dayNumber.className = 'day-number';
+                dayNumber.textContent = day;
+                dayElement.appendChild(dayNumber);
+                
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.min = 0;
+                input.step = 0.5;
+                input.className = 'day-input';
+                input.placeholder = 'Hours';
+                input.dataset.day = day;
+                input.addEventListener('input', updateCalendarTotals);
+                dayElement.appendChild(input);
+                
+                calendarContainer.appendChild(dayElement);
+            }
+            
+            // Add event listeners for prev/next month
+            document.getElementById('prev-month').addEventListener('click', () => {
+                let currentMonth = parseInt(document.getElementById('select-month').value);
+                let currentYear = parseInt(document.getElementById('select-year').value);
+                
+                if (currentMonth === 0) {
+                    document.getElementById('select-month').value = 11;
+                    document.getElementById('select-year').value = currentYear - 1;
+                } else {
+                    document.getElementById('select-month').value = currentMonth - 1;
+                }
+                
+                generateCalendar();
+            });
+            
+            document.getElementById('next-month').addEventListener('click', () => {
+                let currentMonth = parseInt(document.getElementById('select-month').value);
+                let currentYear = parseInt(document.getElementById('select-year').value);
+                
+                if (currentMonth === 11) {
+                    document.getElementById('select-month').value = 0;
+                    document.getElementById('select-year').value = currentYear + 1;
+                } else {
+                    document.getElementById('select-month').value = currentMonth + 1;
+                }
+                
+                generateCalendar();
+            });
+            
+            updateCalendarTotals();
+        }
+        
+        // Update calendar totals
+        function updateCalendarTotals() {
+            const hourlyRate = parseFloat(document.getElementById('calendar-hourly-rate').value) || 0;
+            const inputs = document.querySelectorAll('.day-input');
+            
+            let totalHours = 0;
+            inputs.forEach(input => {
+                totalHours += parseFloat(input.value) || 0;
+            });
+            
+            const totalEarnings = totalHours * hourlyRate;
+            
+            document.getElementById('total-hours').textContent = totalHours.toFixed(1);
+            document.getElementById('total-earnings').textContent = `$${totalEarnings.toFixed(2)}`;
+            document.getElementById('calendar-payment1').textContent = `$${(totalEarnings * 0.5).toFixed(2)}`;
+            document.getElementById('calendar-payment2').textContent = `$${(totalEarnings * 0.5).toFixed(2)}`;
+        }
+        
+        // Salary calculation
+        function calculateSalary() {
+            const hourlyRate = parseFloat(document.getElementById('hourly-rate').value) || 0;
+            const workType = document.getElementById('work-type').value;
+            const frequency = document.getElementById('payment-frequency').value;
+            const amount = parseFloat(document.getElementById('amount').value) || 0;
+            
+            let hoursPerWeek;
+            switch(workType) {
+                case 'full-time': hoursPerWeek = 40; break;
+                case 'part-time': hoursPerWeek = 20; break;
+                case 'custom': hoursPerWeek = parseFloat(document.getElementById('custom-hours').value) || 0; break;
+            }
+            
+            // Calculate based on selected frequency
+            let calculatedHourly, calculatedDaily, calculatedWeekly, calculatedMonthly, calculatedYearly;
+            
+            switch(frequency) {
+                case 'hourly':
+                    calculatedHourly = amount;
+                    break;
+                case 'daily':
+                    calculatedHourly = amount / 8;
+                    break;
+                case 'weekly':
+                    calculatedHourly = amount / hoursPerWeek;
+                    break;
+                case 'monthly':
+                    calculatedHourly = amount / (hoursPerWeek * 4.33);
+                    break;
+                case 'yearly':
+                    calculatedHourly = amount / (hoursPerWeek * 52);
+                    break;
+            }
+            
+            // If hourly rate is provided, it takes precedence
+            if (hourlyRate > 0) {
+                calculatedHourly = hourlyRate;
+            }
+            
+            // Calculate all values
+            calculatedDaily = calculatedHourly * 8;
+            calculatedWeekly = calculatedHourly * hoursPerWeek;
+            calculatedMonthly = calculatedWeekly * 4.33;
+            calculatedYearly = calculatedWeekly * 52;
+            
+            // Update results
+            document.getElementById('result-hourly').textContent = `$${calculatedHourly.toFixed(2)}`;
+            document.getElementById('result-daily').textContent = `$${calculatedDaily.toFixed(2)}`;
+            document.getElementById('result-weekly').textContent = `$${calculatedWeekly.toFixed(2)}`;
+            document.getElementById('result-monthly').textContent = `$${calculatedMonthly.toFixed(2)}`;
+            document.getElementById('result-yearly').textContent = `$${calculatedYearly.toFixed(2)}`;
+            
+            // Set payment amounts to half of monthly
+            document.getElementById('payment1').value = (calculatedMonthly / 2).toFixed(2);
+            document.getElementById('payment2').value = (calculatedMonthly / 2).toFixed(2);
+        }
+        
+        // Payment calculation
+        function calculatePayments() {
+            const payment1 = parseFloat(document.getElementById('payment1').value) || 0;
+            const payment2 = parseFloat(document.getElementById('payment2').value) || 0;
+            
+            const totalMonthly = payment1 + payment2;
+            const hourlyRate = parseFloat(document.getElementById('hourly-rate').value) || 0;
+            const workType = document.getElementById('work-type').value;
+            
+            let hoursPerWeek;
+            switch(workType) {
+                case 'full-time': hoursPerWeek = 40; break;
+                case 'part-time': hoursPerWeek = 20; break;
+                case 'custom': hoursPerWeek = parseFloat(document.getElementById('custom-hours').value) || 0; break;
+            }
+            
+            // Recalculate based on total monthly
+            const calculatedWeekly = totalMonthly / 4.33;
+            const calculatedHourly = calculatedWeekly / hoursPerWeek;
+            const calculatedDaily = calculatedHourly * 8;
+            const calculatedYearly = totalMonthly * 12;
+            
+            // Update results
+            document.getElementById('result-hourly').textContent = `$${calculatedHourly.toFixed(2)}`;
+            document.getElementById('result-daily').textContent = `$${calculatedDaily.toFixed(2)}`;
+            document.getElementById('result-weekly').textContent = `$${calculatedWeekly.toFixed(2)}`;
+            document.getElementById('result-monthly').textContent = `$${totalMonthly.toFixed(2)}`;
+            document.getElementById('result-yearly').textContent = `$${calculatedYearly.toFixed(2)}`;
+            
+            // Update hourly rate field
+            document.getElementById('hourly-rate').value = calculatedHourly.toFixed(2);
+        }
+        
+        // Expenses calculation
+        function calculateExpenses() {
+            const monthlyIncome = parseFloat(document.getElementById('monthly-income').value) || 0;
+            
+            // Get expenses
+            let totalExpenses = 0;
+            document.querySelectorAll('.expense-category').forEach(category => {
+                const amount = parseFloat(category.querySelector('.expense-amount').value) || 0;
+                totalExpenses += amount;
+            });
+            
+            const remaining = monthlyIncome - totalExpenses;
+            
+            // Update summary
+            document.getElementById('total-income').textContent = `$${monthlyIncome.toFixed(2)}`;
+            document.getElementById('total-expenses').textContent = `$${totalExpenses.toFixed(2)}`;
+            
+            const remainingElement = document.getElementById('remaining-balance');
+            remainingElement.textContent = `$${remaining.toFixed(2)}`;
+            remainingElement.className = remaining >= 0 ? 'result-item positive' : 'result-item negative';
+            
+            // Calculate savings allocation
+            let totalPercent = 0;
+            document.querySelectorAll('.savings-category').forEach(category => {
+                const percent = parseFloat(category.querySelector('.savings-percent').value) || 0;
+                totalPercent += percent;
+            });
+            
+            document.getElementById('percent-total').textContent = totalPercent;
+            
+            if (totalPercent > 100) {
+                document.getElementById('percent-total').parentElement.style.backgroundColor = '#ffcdd2';
+                document.getElementById('percent-total').parentElement.style.color = '#c62828';
+            } else {
+                document.getElementById('percent-total').parentElement.style.backgroundColor = '#ffecb3';
+                document.getElementById('percent-total').parentElement.style.color = 'inherit';
+            }
+            
+            // Calculate savings amounts
+            const savingsResults = document.getElementById('savings-results');
+            savingsResults.innerHTML = '';
+            
+            let totalAllocated = 0;
+            
+            document.querySelectorAll('.savings-category').forEach(category => {
+                const name = category.querySelector('.savings-name').value || 'Savings';
+                const percent = parseFloat(category.querySelector('.savings-percent').value) || 0;
+                const amount = (remaining * percent / 100);
+                totalAllocated += amount;
+                
+                const resultItem = document.createElement('div');
+                resultItem.className = 'result-item';
+                resultItem.innerHTML = `
+                    <span>${name}:</span>
+                    <span>$${amount.toFixed(2)}</span>
+                `;
+                
+                savingsResults.appendChild(resultItem);
+            });
+            
+            document.getElementById('total-allocated').textContent = `$${totalAllocated.toFixed(2)}`;
+            
+            // Update total savings
+            document.getElementById('total-savings').textContent = `$${remaining.toFixed(2)}`;
+        }
+        
+        // Add expense category
+        function addExpenseCategory() {
+            const expensesContainer = document.getElementById('expenses-container');
+            const newId = Date.now(); // Unique ID
+            
+            const newExpense = document.createElement('div');
+            newExpense.className = 'expense-category';
+            newExpense.dataset.id = newId;
+            newExpense.innerHTML = `
+                <i class="fas fa-dollar-sign"></i>
+                <input type="text" class="expense-name" placeholder="Expense Name" value="New Expense">
+                <input type="number" class="expense-amount" min="0" step="0.01" placeholder="Amount" value="0">
+                <button class="btn-danger btn-small remove-expense"><i class="fas fa-trash"></i></button>
+            `;
+            
+            expensesContainer.appendChild(newExpense);
+            
+            // Add event listener to the remove button
+            newExpense.querySelector('.remove-expense').addEventListener('click', function() {
+                newExpense.remove();
+                calculateExpenses();
+            });
+            
+            // Add event listeners to inputs
+            newExpense.querySelector('.expense-amount').addEventListener('input', calculateExpenses);
+            newExpense.querySelector('.expense-name').addEventListener('input', calculateExpenses);
+            
+            calculateExpenses();
+        }
+        
+        // Add savings category
+        function addSavingsCategory() {
+            const savingsContainer = document.getElementById('savings-container');
+            const newId = Date.now(); // Unique ID
+            
+            const newSavings = document.createElement('div');
+            newSavings.className = 'savings-category';
+            newSavings.dataset.id = newId;
+            newSavings.innerHTML = `
+                <i class="fas fa-piggy-bank"></i>
+                <input type="text" class="savings-name" placeholder="Savings Name" value="New Savings">
+                <input type="number" class="savings-percent" min="0" max="100" value="0" step="1">
+                <span>%</span>
+                <button class="btn-danger btn-small remove-savings"><i class="fas fa-trash"></i></button>
+            `;
+            
+            savingsContainer.appendChild(newSavings);
+            
+            // Add event listener to the remove button
+            newSavings.querySelector('.remove-savings').addEventListener('click', function() {
+                newSavings.remove();
+                calculateExpenses();
+            });
+            
+            // Add event listeners to inputs
+            newSavings.querySelector('.savings-percent').addEventListener('input', calculateExpenses);
+            newSavings.querySelector('.savings-name').addEventListener('input', calculateExpenses);
+            
+            calculateExpenses();
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Generate initial calendar
+            const currentDate = new Date();
+            document.getElementById('select-month').value = currentDate.getMonth();
+            generateCalendar();
+            
+            // Add event listeners
+            document.getElementById('calculate-salary').addEventListener('click', calculateSalary);
+            document.getElementById('calculate-payments').addEventListener('click', calculatePayments);
+            document.getElementById('calendar-hourly-rate').addEventListener('input', updateCalendarTotals);
+            document.getElementById('select-month').addEventListener('change', generateCalendar);
+            document.getElementById('select-year').addEventListener('change', generateCalendar);
+            document.getElementById('monthly-income').addEventListener('input', calculateExpenses);
+            document.getElementById('add-expense').addEventListener('click', addExpenseCategory);
+            document.getElementById('add-savings').addEventListener('click', addSavingsCategory);
+            
+            // Add event listeners to existing expense inputs
+            document.querySelectorAll('.expense-amount, .expense-name').forEach(input => {
+                input.addEventListener('input', calculateExpenses);
+            });
+            
+            // Add event listeners to existing savings inputs
+            document.querySelectorAll('.savings-percent, .savings-name').forEach(input => {
+                input.addEventListener('input', calculateExpenses);
+            });
+            
+            // Add event listeners to remove buttons
+            document.querySelectorAll('.remove-expense').forEach(button => {
+                button.addEventListener('click', function() {
+                    this.closest('.expense-category').remove();
+                    calculateExpenses();
+                });
+            });
+            
+            document.querySelectorAll('.remove-savings').forEach(button => {
+                button.addEventListener('click', function() {
+                    this.closest('.savings-category').remove();
+                    calculateExpenses();
+                });
+            });
+            
+            // Share button
+            document.getElementById('share-link').addEventListener('click', function() {
+                alert('Shareable link generated! Copy this URL to share your calculator settings.');
+                // In a real implementation, this would generate a URL with the current state
+            });
+            
+            // Calculate initial values
+            calculateSalary();
+            calculateExpenses();
+        });
+    </script>
+</body>
+</html>
